@@ -8,8 +8,7 @@
 /* ─── CSS Custom Properties ─── */
 :root {
   /* Core palette */
-  /* --bg-primary: #0a0e1a; */
-  --bg-primary: #e73109;
+  --bg-primary: #0a0e1a;
   --bg-secondary: #111827;
   --bg-tertiary: #1a2236;
   --bg-card: rgba(17, 24, 39, 0.7);
