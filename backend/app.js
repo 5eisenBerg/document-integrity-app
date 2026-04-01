@@ -1,3 +1,8 @@
+require("dotenv").config({
+  path: require("path").resolve(__dirname, "../.env"),
+});
+
+const { BlobServiceClient } = require("@azure/storage-blob");
 const express = require("express");
 const multer = require("multer");
 const pdfParseModule = require("pdf-parse");
@@ -45,6 +50,14 @@ const { analyzeParaphrase } = require("./services/paraphrase-service");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING,
+);
+
+const containerClient = blobServiceClient.getContainerClient(
+  process.env.AZURE_STORAGE_CONTAINER_NAME,
+);
 
 // Middleware
 app.use(cors());
@@ -102,6 +115,17 @@ app.post("/analyze", upload.single("pdf"), async (req, res) => {
     console.log(
       `📄 Analyzing: ${req.file.originalname} (${(req.file.size / 1024).toFixed(1)}KB)`,
     );
+
+    const blobName = `${uuidv4()}-${req.file.originalname}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    await blockBlobClient.uploadData(req.file.buffer, {
+      blobHTTPHeaders: {
+        blobContentType: req.file.mimetype,
+      },
+    });
+
+    console.log("Uploaded to Azure Blob:", blobName);
 
     // Extract text from PDF
     const data = await parsePdfBuffer(req.file.buffer);

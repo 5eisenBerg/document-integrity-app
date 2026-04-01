@@ -19,6 +19,7 @@
   "author": "Document Integrity Team",
   "license": "MIT",
   "dependencies": {
+    "@azure/storage-blob": "^12.31.0",
     "compromise": "^14.14.3",
     "cors": "^2.8.6",
     "express": "^5.2.1",
