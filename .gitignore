@@ -1,0 +1,15 @@
+node_modules/
+uploads/
+modules/
+.env
+npm-debug.log*
+*.log
+health_result.txt
+health_test.json
+node_check.txt
+server_output.txt
+startup_ok.txt
+test_out.txt
+test_output.txt
+test_output_copy.log
+test_results.txt

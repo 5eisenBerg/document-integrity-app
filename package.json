@@ -1,0 +1,30 @@
+{
+  "name": "document-integrity-system",
+  "version": "1.0.0",
+  "description": "AI-powered document integrity system with plagiarism detection, grammar checking, and paraphrasing",
+  "main": "backend/app.js",
+  "scripts": {
+    "start": "node backend/app.js",
+    "dev": "node --watch backend/app.js"
+  },
+  "keywords": [
+    "document",
+    "integrity",
+    "plagiarism",
+    "grammar",
+    "paraphrase",
+    "azure",
+    "nlp"
+  ],
+  "author": "Document Integrity Team",
+  "license": "MIT",
+  "dependencies": {
+    "compromise": "^14.14.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "natural": "^8.0.1",
+    "pdf-parse": "^2.4.5",
+    "uuid": "^11.1.0"
+  }
+}

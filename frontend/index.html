@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Document Integrity System — AI-powered plagiarism detection, grammar checking, and paraphrasing for PDF documents.">
+  <title>Document Integrity System | AI-Powered Document Analysis</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+</head>
+<body>
+  <div class="app-container" id="app">
+    <!-- ═══ Header ═══ -->
+    <header class="app-header">
+      <div class="app-header__logo">
+        <div class="app-header__icon">🔒</div>
+        <h1 class="app-header__title">Document Integrity</h1>
+      </div>
+      <p class="app-header__subtitle">
+        AI-powered analysis pipeline — detect plagiarism, fix grammar, and generate paraphrased content from your PDF documents.
+      </p>
+      <div class="app-header__badges">
+        <span class="badge"><span class="badge__dot"></span> Plagiarism Detection</span>
+        <span class="badge"><span class="badge__dot"></span> Grammar Checking</span>
+        <span class="badge"><span class="badge__dot"></span> Smart Paraphrasing</span>
+      </div>
+    </header>
+
+    <!-- ═══ Upload Section ═══ -->
+    <section class="upload-section" id="upload-section">
+      <div class="upload-zone" id="upload-zone">
+        <span class="upload-zone__icon">📄</span>
+        <h2 class="upload-zone__title">Drop your PDF here</h2>
+        <p class="upload-zone__subtitle">or click to browse files · Max 50MB · PDF only</p>
+        <button class="upload-zone__btn" type="button" id="browse-btn">
+          📎 Choose File
+        </button>
+        <input type="file" class="upload-zone__input" id="file-input" accept=".pdf,application/pdf">
+      </div>
+
+      <div class="file-info" id="file-info">
+        <span class="file-info__icon">📑</span>
+        <div class="file-info__details">
+          <div class="file-info__name" id="file-name">—</div>
+          <div class="file-info__size" id="file-size">—</div>
+        </div>
+        <button class="file-info__remove" id="remove-file" title="Remove file">✕</button>
+      </div>
+
+      <button class="analyze-btn" id="analyze-btn" type="button">
+        🚀 Analyze Document
+      </button>
+    </section>
+
+    <!-- ═══ Progress Section ═══ -->
+    <section class="progress-section" id="progress-section">
+      <div class="progress-card">
+        <div class="progress-card__title">
+          <span class="spinner"></span> Analyzing your document...
+        </div>
+        <div class="progress-steps">
+          <div class="progress-step" id="step-extract">
+            <div class="progress-step__icon">📄</div>
+            <span class="progress-step__label">Extracting text from PDF</span>
+          </div>
+          <div class="progress-step" id="step-plagiarism">
+            <div class="progress-step__icon">🔍</div>
+            <span class="progress-step__label">Running plagiarism detection (TF-IDF + Cosine)</span>
+          </div>
+          <div class="progress-step" id="step-grammar">
+            <div class="progress-step__icon">✏️</div>
+            <span class="progress-step__label">Checking grammar (LanguageTool API)</span>
+          </div>
+          <div class="progress-step" id="step-paraphrase">
+            <div class="progress-step__icon">🔄</div>
+            <span class="progress-step__label">Generating paraphrased content</span>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Results Section ═══ -->
+    <section class="results-section" id="results-section">
+      <!-- Summary Cards -->
+      <div class="summary-grid" id="summary-grid">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <nav class="tabs__nav" id="tabs-nav">
+          <button class="tabs__btn active" data-tab="plagiarism" id="tab-btn-plagiarism">🔍 Plagiarism</button>
+          <button class="tabs__btn" data-tab="grammar" id="tab-btn-grammar">✏️ Grammar</button>
+          <button class="tabs__btn" data-tab="paraphrase" id="tab-btn-paraphrase">🔄 Paraphrase</button>
+        </nav>
+
+        <!-- Plagiarism Tab -->
+        <div class="tabs__panel active" id="panel-plagiarism">
+          <div class="detail-card">
+            <h3 class="detail-card__title">🔍 Plagiarism Analysis</h3>
+            <p class="detail-card__desc" id="plag-message">—</p>
+            <div class="score-ring-container">
+              <div class="score-ring">
+                <svg viewBox="0 0 120 120">
+                  <circle class="score-ring__bg" cx="60" cy="60" r="50"/>
+                  <circle class="score-ring__fill" id="plag-ring" cx="60" cy="60" r="50" stroke="url(#plag-gradient)"/>
+                  <defs>
+                    <linearGradient id="plag-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#6366f1"/>
+                      <stop offset="100%" style="stop-color:#a78bfa"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="score-ring__label">
+                  <span class="score-ring__value" id="plag-score">0</span>
+                  <span class="score-ring__unit">% Similar</span>
+                </div>
+              </div>
+              <div class="score-details" id="plag-details">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem;color:var(--text-secondary);">Sentence-Level Analysis</h4>
+            <div class="sentence-grid" id="plag-sentences">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Grammar Tab -->
+        <div class="tabs__panel" id="panel-grammar">
+          <div class="detail-card">
+            <h3 class="detail-card__title">✏️ Grammar & Spelling Analysis</h3>
+            <p class="detail-card__desc" id="gram-message">—</p>
+            <div class="score-ring-container">
+              <div class="score-ring">
+                <svg viewBox="0 0 120 120">
+                  <circle class="score-ring__bg" cx="60" cy="60" r="50"/>
+                  <circle class="score-ring__fill" id="gram-ring" cx="60" cy="60" r="50" stroke="url(#gram-gradient)"/>
+                  <defs>
+                    <linearGradient id="gram-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#22c55e"/>
+                      <stop offset="100%" style="stop-color:#16a34a"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="score-ring__label">
+                  <span class="score-ring__value" id="gram-score">0</span>
+                  <span class="score-ring__unit">Quality</span>
+                </div>
+              </div>
+              <div class="score-details" id="gram-details">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            
+            <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem;color:var(--text-secondary);">Issue Categories</h4>
+            <div class="category-bars" id="gram-categories">
+              <!-- Dynamically populated -->
+            </div>
+
+            <h4 style="font-size:0.9rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--text-secondary);">Detected Issues</h4>
+            <div class="issue-list" id="gram-issues">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Paraphrase Tab -->
+        <div class="tabs__panel" id="panel-paraphrase">
+          <div class="detail-card">
+            <h3 class="detail-card__title">🔄 Paraphrasing Results</h3>
+            <p class="detail-card__desc" id="para-message">—</p>
+            <div class="score-ring-container">
+              <div class="score-ring">
+                <svg viewBox="0 0 120 120">
+                  <circle class="score-ring__bg" cx="60" cy="60" r="50"/>
+                  <circle class="score-ring__fill" id="para-ring" cx="60" cy="60" r="50" stroke="url(#para-gradient)"/>
+                  <defs>
+                    <linearGradient id="para-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#f59e0b"/>
+                      <stop offset="100%" style="stop-color:#d97706"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="score-ring__label">
+                  <span class="score-ring__value" id="para-score">0</span>
+                  <span class="score-ring__unit">Diversity</span>
+                </div>
+              </div>
+              <div class="score-details" id="para-details">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem;color:var(--text-secondary);">Sentence Comparison</h4>
+            <div class="sentence-grid" id="para-sentences">
+              <!-- Dynamically populated -->
+            </div>
+
+            <div class="paraphrase-output" id="para-output-section">
+              <h4 style="font-size:0.9rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--text-secondary);">📋 Full Paraphrased Text</h4>
+              <div class="paraphrase-output__box" id="para-output-box">
+                <button class="paraphrase-output__copy" id="copy-paraphrase" title="Copy to clipboard">📋 Copy</button>
+                <div id="para-full-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meta Info -->
+      <div class="meta-info" id="meta-info">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+    <!-- ═══ Footer ═══ -->
+    <footer class="app-footer">
+      <p>Document Integrity System v1.0.0 · Powered by <a href="#">Natural NLP</a> · <a href="#">LanguageTool</a> · <a href="#">Compromise</a></p>
+      <p style="margin-top:0.3rem;font-size:0.72rem;">Built for Azure Cloud Deployment</p>
+    </footer>
+  </div>
+
+  <script src="app-client.js"></script>
+</body>
+</html>
