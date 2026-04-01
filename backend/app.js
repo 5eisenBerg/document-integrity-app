@@ -1,7 +1,3 @@
-console.log(
-  "🚀 PRODUCTION: Document Integrity API v1.0 - Azure App Service Live",
-);
-
 require("dotenv").config({
   path: require("path").resolve(__dirname, "../.env"),
 });
